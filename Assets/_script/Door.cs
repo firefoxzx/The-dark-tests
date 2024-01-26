@@ -7,6 +7,7 @@ public class Door : Intreactable
 {
     private enum Doortype {Unlocked,Locked,Key,Keypad}
     [SerializeField] Animator Anim;
+    [SerializeField] bool IsOpen;
     [SerializeField] private Doortype doortype;
     [Header("Door with key")]
     [SerializeField] private GameObject doorKey;
@@ -18,7 +19,8 @@ public class Door : Intreactable
     [Header("Sounds")]
     [SerializeField] AudioSource audioSource;
     [SerializeField] AudioClip ClosedClip;
-    [SerializeField] AudioClip OpenedClip;
+    [SerializeField] AudioClip OpenClip;
+    [SerializeField] AudioClip CloseClip;
     
 
     public void Start(){
@@ -27,9 +29,6 @@ public class Door : Intreactable
         Anim = GetComponent<Animator>();
         Anim.SetBool("Open",false);
         audioSource = GetComponent<AudioSource>();
-        if(Player_Text_code == null){
-            return; // this is for doors withput keys
-        }
     }
 
     private void Update(){
@@ -67,9 +66,16 @@ public class Door : Intreactable
         }
     }
     private void Opened(){
-        Anim.SetBool("Open",true);
-        IsIntreactable = false;
-        PrompetMasseage = string.Empty;
-        audioSource.PlayOneShot(OpenedClip);
+        if(!IsOpen){
+            Anim.SetBool("Open",true);
+            PrompetMasseage = "Close Door";
+            audioSource.PlayOneShot(OpenClip);
+            IsOpen = true;
+        }else{
+            Anim.SetBool("Open",false);
+            PrompetMasseage = "Open Door";
+            audioSource.PlayOneShot(CloseClip);
+            IsOpen = false;
+        }
     }
 }
